@@ -1,0 +1,65 @@
+# ---------------------------------------------------------------------------
+# Mr. Diet API configuration.
+# Every secret comes from an environment variable — copy .env.example, fill it
+# in, and export it (or set the variables in your VPS / systemd service).
+# ---------------------------------------------------------------------------
+server:
+  port: ${PORT:8081}
+  forward-headers-strategy: framework   # correct https URLs behind Apache/Nginx
+
+spring:
+  application:
+    name: mrdiet-api
+  datasource:
+    # Same MySQL database the PHP site used — no data migration needed.
+    url: ${DB_URL:jdbc:mysql://localhost:3306/mrdietweb?useUnicode=true&characterEncoding=utf8&tinyInt1isBit=false}
+    username: ${DB_USER:root}
+    password: ${DB_PASS:}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
+  jackson:
+    default-property-inclusion: always
+
+app:
+  timezone: ${APP_TIMEZONE:Asia/Kolkata}
+  public-url: ${APP_PUBLIC_URL:https://mrdietplan.in}
+  upload-dir: ${UPLOAD_DIR:./uploads}
+
+  jwt:
+    secret: ${JWT_SECRET:}            # REQUIRED — at least 32 random characters
+    expiry-days: ${JWT_EXPIRY_DAYS:30}
+
+  cors:
+    allowed-origins: ${CORS_ORIGINS:https://mrdietplan.in,https://www.mrdietplan.in,http://localhost:8080,http://localhost:5173}
+
+  google:
+    client-id: ${GOOGLE_CLIENT_ID:785889991022-6jfg7dqe45cfecf1n0e3kubor89lof3p.apps.googleusercontent.com}
+
+  # Keys below are FALLBACKS. If the admin panel's Settings table has a value
+  # (openai_api_key, cashfree_app_id, razorpay_key_id, onesignal_app_id …),
+  # that value wins — exactly like the PHP version.
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    model: ${OPENAI_MODEL:gpt-4o-mini}
+  cashfree:
+    app-id: ${CASHFREE_APP_ID:}
+    secret-key: ${CASHFREE_SECRET_KEY:}
+    api-version: ${CASHFREE_API_VERSION:2022-09-01}
+  razorpay:
+    key-id: ${RAZORPAY_KEY_ID:}
+    key-secret: ${RAZORPAY_KEY_SECRET:}
+  onesignal:
+    app-id: ${ONESIGNAL_APP_ID:}
+    rest-api-key: ${ONESIGNAL_REST_API_KEY:}
+
+  reminders:
+    enabled: ${REMINDERS_ENABLED:true}   # replaces the PHP cron job (runs every 5 min)
+
+  ai:
+    max-generations-per-hour: ${AI_MAX_PER_HOUR:30}   # per user, protects your OpenAI bill
+
+logging:
+  level:
+    com.mrdiet: INFO

@@ -1,0 +1,15 @@
+# Apache config for the built React app (dist/).
+# /api/* is proxied to the Spring Boot app running on port 8081 of the same server.
+# Needs mod_proxy + mod_proxy_http (available on a VPS; see README for Nginx).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  RewriteRule ^api/(.*)$ http://127.0.0.1:8081/api/$1 [P,L]
+
+  # SPA fallback: every other unknown path loads index.html
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
