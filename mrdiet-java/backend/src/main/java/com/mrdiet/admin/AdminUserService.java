@@ -245,9 +245,7 @@ public class AdminUserService {
         List<String> sets = new ArrayList<>();
         List<Object> args = new ArrayList<>();
         ObjectNode ext = null;
-        var fields = data.fields();
-        while (fields.hasNext()) {
-            var e = fields.next();
+        for (var e : data.properties()) {
             String col = e.getKey();
             if (!PROFILE_COLUMNS.contains(col)) continue;
             JsonNode v = e.getValue();
